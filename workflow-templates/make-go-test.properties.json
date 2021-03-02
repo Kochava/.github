@@ -1,0 +1,12 @@
+{
+    "name": "Make / Go test",
+    "description": "Runs make test in a golang environment",
+    "iconName": "gopher-front",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "^Makefile$",
+        ".*\\.go$"
+    ]
+}

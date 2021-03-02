@@ -1,0 +1,35 @@
+#
+# This workflow will run `go test` for multiple golang versions when a commit
+# is pushed and for pull requests
+#
+name: Go Test
+
+on:
+  pull_request:
+
+env:
+  # Don't validate private repos against the public proxy
+  GOPRIVATE: "github.com/Kochava"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.14', '1.15']
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Configure git for private modules
+        env:
+          TOKEN: ${{ secrets.GH_CI_PAT }}
+          GITHUB_USERNAME: ${{ secrets.GH_CI_USERNAME }}
+        run: git config --global url."https://${GITHUB_USERNAME}:${TOKEN}@github.com".insteadOf "https://github.com"
+      - name: go vendor
+        run: go mod vendor
+      - name: go test
+        run: go test ./...
